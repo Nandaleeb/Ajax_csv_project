@@ -1,0 +1,57 @@
+body{
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    margin: 20px;
+    background-color: #9b23232c;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+}
+h1{
+    text-align: center;
+    color: #065b25;
+    text-shadow: 1px 1px 2px #000;
+    background-color: rgba(0, 255, 255, 0.304);
+    padding: 20px;
+
+}
+/* Simple file input style */
+input[type="file"] {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 20px;
+    border: 2px solid #065b25;
+    border-radius: 5px;
+    background-color: #9061613b;
+    cursor: pointer;
+    font-size: 16px;
+    width: 250px;
+}
+
+input[type="file"]:hover {
+    background-color: #f0f8ff;
+    border-color: #4CAF50;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #065b25;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+tr:hover {
+   
+    background-color: #ddd;
+}
