@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./style.css">
+
+    <title>CSV Upload</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h2>CSV & Excel Upload</h2>
+    
+    <label for="file">Choose a CSV or Excel file:</label>
+    <input type="file" id="file" accept=".csv,.xls,.xlsx" onchange="upload()">
+    
+    <div id="result"></div>
+
+    <script>
+        function upload() {
+            const file = document.getElementById('file').files[0];
+            if (!file) return;
+
+            // Handle CSV files → Use Papa.parse
+            if (file.name.toLowerCase().endsWith('.csv')) {
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        const data = results.data;
+                        const headers = Object.keys(data[0] || {});
+                        let html = '<table border="1">';
+                        
+                        // Display headers
+                        if (headers && headers.length > 0) {
+                            html += '<tr>';
+                            headers.forEach(header => {
+                                html += '<th>' + header + '</th>';
+                            });
+                            html += '</tr>';
+                        }
+                        
+                        // Display data rows
+                        data.forEach(row => {
+                            if (row && Object.keys(row).length > 0) {
+                                html += '<tr>';
+                                headers.forEach(header => {
+                                    html += '<td>' + (row[header] || '') + '</td>';
+                                });
+                                html += '</tr>';
+                            }
+                        });
+                        
+                        html += '</table>';
+                        document.getElementById('result').innerHTML = html;
+                    }
+                });
+                return;
+            }
+
+            // Handle Excel files → Use XLSX.utils
+            if (file.name.toLowerCase().endsWith('.xls') || file.name.toLowerCase().endsWith('.xlsx')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const csvString = XLSX.utils.sheet_to_csv(firstSheet);
+                    
+                    Papa.parse(csvString, {
+                        header: false,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            const rows = results.data;
+                            
+                            let html = '<table border="1">';
+                            rows.forEach((row, i) => {
+                                if (row && row.length > 0) {
+                                    html += '<tr>';
+                                    row.forEach(cell => {
+                                        html += i === 0 ? '<th>' + (cell || '') + '</th>' : '<td>' + (cell || '') + '</td>';
+                                    });
+                                    html += '</tr>';
+                                }
+                            });
+                            html += '</table>';
+                            document.getElementById('result').innerHTML = html;
+                        }
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+                return;
+            }
+        }
+    </script>
+</body>
+</html>
